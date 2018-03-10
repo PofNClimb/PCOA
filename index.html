@@ -20,9 +20,9 @@
 		#screen
 		{
 			max-width  : 272px;
-			max-height : 390px;
+			height     : 403px;
 			margin     : 127px auto;
-			font-size  : normal;
+			font-size  : small;
 		}
 	}
 	
@@ -32,7 +32,7 @@
 		{
 			width  : 100%;
 			height : 100vh;
-			font-size : 400%;
+			font-size : 290%;
 		}
 	}
 	
@@ -41,17 +41,77 @@
 		font : bold 200% calibri, serif;
 		background-color : rgb(96,147,172);
 		height : 1.6em;
+		line-height : 1.6em;
 		color : whitesmoke;
-		display : flex;
-		justify-content : center;
-		align-items : center;
+		text-align : center;
+		vertical-align : middle;
 	}
+	
+	#noBLE
+	{
+		display : table;
+		width   : 100%;
+		height  : calc(100% - 3.2em);
+	}
+
+	#noBLE p
+	{
+		display: table-cell;
+		text-align : center;
+		vertical-align: middle;
+	}
+	
+	#noBLE a
+	{
+		color : black;
+		font-weight : bold;
+		text-decoration : none;
+	}
+	
+	#connection p
+	{
+		margin : 1em;
+	}
+	
+	#connection select
+	{
+		
+	}
+}
+	
+	
 </style>
 
 <body>
 
 	<div id="screen">
+	
 		<div id="title">PCOApp</div>
+		
+		<!--
+		<div id="noBLE">
+			<p>
+				<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
+				On Google Chrome, you can enable it as <a href="https://developers.google.com/web/updates/2014/03/Get-on-the-CSS-Grid">here</a><br/>
+				On iOS, you can use <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a>
+			</p>
+		</div>
+		-->
+		
+		<div id="connection">
+		
+			<p id="device-select">
+				<label for="device">PCOA device &nbsp;</label>
+				<select id="device" name="device">
+					<option value="A">PCOA_prototype</option>
+					<option value="B">PCOA_1</option>
+					<option value="C">PCOA_2</option>
+					<option value="D">PCOA_3</option>
+				</select>
+			</p>
+			
+		</div>
+
 	</div>
 
     <script>
@@ -60,3 +120,7 @@
 
 </body>
 </html>
+
+<!--
+	
+-->
