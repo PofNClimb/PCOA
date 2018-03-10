@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>PCOApp</title>
+<head>    
+	<title>PCOApp</title>
 </head>
 
 <style>
@@ -26,6 +26,7 @@
 		}
 	}
 	
+		
 	@media (max-device-width:480px)
 	{
 		#screen
@@ -73,12 +74,17 @@
 		margin : 1em;
 	}
 	
-	#connection select
+	label
 	{
-		font-size : 100%;
+		display : flex;
+		align-items : baseline;
+		flex-direction : row;
 	}
-}
 	
+	select
+	{
+		width : 400%;
+	}
 	
 </style>
 
@@ -101,26 +107,34 @@
 		<div id="connection">
 		
 			<p id="device-select">
-				<label for="device">PCOA device &nbsp;</label>
-				<select id="device" name="device">
-					<option value="A">PCOA_prototype</option>
-					<option value="B">PCOA_1</option>
-					<option value="C">PCOA_2</option>
-					<option value="D">PCOA_3</option>
-				</select>
+				<label for="device">
+					<span>PCOA device &nbsp;&nbsp;</span>
+					<select id="device" name="device" >
+						<option value="A">PCOA_prototype</option>
+						<option value="B">PCOA_1</option>
+						<option value="C">PCOA_2</option>
+						<option value="D">PCOA_3</option>
+					</select>
+				</label>
 			</p>
 			
 		</div>
 
 	</div>
 
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">  
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>  
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script> 
     <script>
-        // Un peu de code JavaScript...
-    </script>
+		$(function ()
+		{
+			$("#device").selectmenu();
+		});
+	</script>
 
 </body>
 </html>
 
 <!--
-	
+
 -->
