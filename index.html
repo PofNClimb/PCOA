@@ -6,7 +6,7 @@
 </head>
 
 <style>
-	@media screen
+	@media screen and (min-width:350px)
 	{
 		body
 		{
@@ -16,39 +16,43 @@
 			background-position : 50% 0%;
 			background-size     : 312px 640px;
 		}
+		
+		#screen
+		{
+			max-width  : 272px;
+			max-height : 390px;
+			margin     : 127px auto;
+		}
 	}
 	
 	#screen
 	{
-		max-width  : 272px;
-		max-height : 640px;
-		margin     : 127px auto;
+		width  : 100%;
+		height : 177vw;
 	}
+	
+	#title
+	{
+		background-color : rgb(96,147,172);
+		color : whitesmoke;
+		height : 50px;
+		font : bold xx-large calibri, serif;
+		display : flex;
+		justify-content : center;
+		align-items : center;
+	}
+	
 </style>
 
 <body>
 
 	<div id="screen">
-		<div class="element" style="background-color:red">Elément 1</div>
-		<div class="element" style="background-color:blue">Elément 2</div>
-		<div class="element" style="background-color:green">Elément 3</div>
+		<div id="title">PCOApp</div>
 	</div>
 
     <script>
         // Un peu de code JavaScript...
     </script>
 
-	<!--
-    <script src="hello.js"></script>
-	-->
-
 </body>
 </html>
-
-<!-- 
-
-
-
-
-
--->
