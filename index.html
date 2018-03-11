@@ -74,16 +74,16 @@
 		margin : 1em;
 	}
 	
-	label
+	#select_area label
 	{
 		display : flex;
 		align-items : baseline;
 		flex-direction : row;
 	}
 	
-	select
+	#select_area select
 	{
-		width: 400%;
+		width: 100%;
 	}
 	
 	.ui-selectmenu-text {font-size: 80% !important;}
@@ -100,6 +100,12 @@
 		background-color: rgb(96,147,172);
 		border : 0px;
 	}
+
+	#connect_area #btn_connect:disabled, #connect_area #btn_connect[disabled]
+	{
+		background-color : lightgray;
+		color : gray;
+	}
 }
 
 </style>
@@ -109,8 +115,7 @@
 	<div id="screen">
 	
 		<div id="title">PCOApp</div>
-		
-		<!--
+
 		<div id="noBLE">
 			<p>
 				<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
@@ -118,7 +123,6 @@
 				On iOS, you can use <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a>
 			</p>
 		</div>
-		-->
 		
 		<div id="connection">
 		
@@ -126,17 +130,15 @@
 				<label for="device">
 					<span>PCOA device &nbsp; &nbsp;</span>
 					<select id="device" name="device" >
-						<option value="A">PCOA_prototype</option>
-						<option value="B">PCOA_1</option>
-						<option value="C">PCOA_2</option>
-						<option value="D">PCOA_3</option>
+						<option value="none" disabled>no PCOA device detected</option>
 					</select>
 				</label>
 			</span>
 			
 			<span id="connect_area">
-				<center><button id="btn_connect">Connect</button></center>
+				<center><button id="btn_connect">connect</button></center>
 			</span>
+			
 		</div>
 
 	</div>
@@ -147,15 +149,34 @@
     <script>
 		$(function ()
 		{
-			$("#device").selectmenu();
+			$.widget('app.selectmenu', $.ui.selectmenu,
+			{
+				_drawButton: function()
+				{
+					this._super();
+					
+					var selected = this.element.find('[selected]').length;
+					var placeholder = this.options.placeholder;
+					
+					if(!selected && placeholder)
+					{
+						this.buttonText.text( placeholder );    
+					}
+				}
+			});
+
+			$("#device").selectmenu({placeholder:'select a device'});
 			
-			$("button" ).click
+			$("#btn_connect" ).click
 			(
 				function(event)
-				{
+				{				
 					event.preventDefault();
 				}
 			);
+			
+			$("#noBLE").hide();
+
 		});
 	</script>
 
