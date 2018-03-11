@@ -25,7 +25,6 @@
 			font-size  : small;
 		}
 	}
-	
 		
 	@media (max-device-width:480px)
 	{
@@ -48,65 +47,63 @@
 		vertical-align : middle;
 	}
 	
-	#noBLE
+	button
+	{
+		padding : 0.5em 1em 0.5em 1em;
+		font : bold 100% calibri, serif;
+	}
+	
+	#connection
+	{
+		margin : 1em;
+		margin-top : 5em;
+	}
+	
+	.message
 	{
 		display : table;
 		width   : 100%;
-		height  : calc(100% - 3.2em);
 	}
 
-	#noBLE p
+	.message p
 	{
 		display: table-cell;
 		text-align : center;
 		vertical-align: middle;
 	}
 	
-	#noBLE a
+	.message a
 	{
 		color : black;
 		font-weight : bold;
 		text-decoration : none;
 	}
 	
-	#connection
+	#settings span
 	{
-		margin : 1em;
+		margin : 1em 1em 1em 0.5em;
+		font : 150% calibri, serif;
 	}
 	
-	#select_area label
+	.slider
 	{
-		display : flex;
-		align-items : baseline;
-		flex-direction : row;
+		margin : 0.5em 3.5em 0.5em 0.5em;
 	}
 	
-	#select_area select
+	#hour_handle, #minute_handle
 	{
-		width: 100%;
-	}
-	
-	.ui-selectmenu-text {font-size: 80% !important;}
-	.ui-menu-item {font-size: 80% !important;}
-	
-	#connect_area #btn_connect
-	{
-		height: 1.8em;
-		width : 6em;
+		width: 3em;
+		height: 1.6em;
+		top: 50%;
+		margin-top: -.8em;
 		text-align: center;
-		vertical-align: middle;
-		font : bold 150% calibri, serif;
-		color: whitesmoke;
-		background-color: rgb(96,147,172);
-		border : 0px;
+		line-height: 1.6em;
 	}
-
-	#connect_area #btn_connect:disabled, #connect_area #btn_connect[disabled]
+	
+	.blank_row
 	{
-		background-color : lightgray;
-		color : gray;
+		height: 1em !important;
 	}
-}
 
 </style>
 
@@ -115,68 +112,185 @@
 	<div id="screen">
 	
 		<div id="title">PCOApp</div>
+		
+		<div id="connection" hidden>
+			<center><button id="btn_connect" class="btn_connect"><span>connect to a PCOA device</span></button></center>
+		</div>		
 
-		<div id="noBLE">
+		<div class="message" id="noBLE" hidden>
 			<p>
+				<br/><br/><br/>
 				<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
 				On Google Chrome, you can enable it as <a href="https://developers.google.com/web/updates/2014/03/Get-on-the-CSS-Grid">here</a><br/>
-				On iOS, you can use <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a>
+				On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser
 			</p>
 		</div>
 		
-		<div id="connection">
-		
-			<span id="select_area">
-				<label for="device">
-					<span>PCOA device &nbsp; &nbsp;</span>
-					<select id="device" name="device" >
-						<option value="none" disabled>no PCOA device detected</option>
-					</select>
-				</label>
-			</span>
-			
-			<span id="connect_area">
-				<center><button id="btn_connect">connect</button></center>
-			</span>
-			
+		<div class="message" id="noDevice" hidden>
+			<p>
+				<br/><br/><br/>
+				<b style="color:red;">No device has been found nearby</b>
+			</p>
 		</div>
+		
+		<div class="message" id="invalidPassword" hidden>
+			<p>
+				<br/><br/><br/>
+				<b style="color:red;">Invalid password</b>
+			</p>
+		</div>
+		
+		<div id="settings">
+			<table>
+			
+				<tr class="blank_row"></tr>
+				<tr>
+					<td colspan="3">
+						<span><b>PCOA_prototype</b></span>
+					</td>
+					<td>
+						<span>X</span>
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr><tr class="blank_row"></tr>
+				<tr>
+					<td rowspan="2"><span>Alarm</span></td>
+					<td colspan="3">
+						<div id="hour_slider" class="slider">
+							<div id="hour_handle" class="ui-slider-handle"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div id="minute_slider" class="slider">
+							<div id="minute_handle" class="ui-slider-handle"></div>
+						</div>
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr>
+				<tr>
+					<td rowspan="2"><span>Interval</span></td>
+					<td rowspan="2"  width="99%">
+						<center><input type="number" min="0" max="1440"></center>
+					</td>
+					<td>
+						<input type="radio" name="radio-1" id="radio-1">
+					</td>
+					<td>h</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="radio" name="radio-2" id="radio-2">
+					</td>
+					<td>m</td>
+				</tr>
+				
+				<tr class="blank_row"></tr>
+				<tr>
+					<td colspan="4">
+						<div id="save">
+							<center><button id="btn_save" class="btn_save">save settings</button></center>
+						</div>	
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr><tr class="blank_row"></tr>
+				<tr>
+					<td colspan="4">
+						<div id="load">
+							<center><button id="btn_save" class="btn_save">load pills</button></center>
+						</div>	
+					</td>
+				</tr>
+				
+			</table>
+			
 
+		</div>
 	</div>
 
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">  
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>  
 	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script> 
-    <script>
+    <script>		
 		$(function ()
 		{
-			$.widget('app.selectmenu', $.ui.selectmenu,
+			$("#noBLE").hide();
+			$("#noDevice").hide();
+			$("#invalidPassword").hide();
+			
+			var hour_handle = $("#hour_handle");
+			$("#hour_slider").slider(
 			{
-				_drawButton: function()
+				min: 0,
+				max: 23,
+				create: function()
 				{
-					this._super();
-					
-					var selected = this.element.find('[selected]').length;
-					var placeholder = this.options.placeholder;
-					
-					if(!selected && placeholder)
+					hour_handle.text($(this).slider("value")+'h');
+				},
+				slide : function(event,ui)
+				{
+					hour_handle.text(ui.value+'h');
+				}
+			});
+			
+			var minute_handle = $("#minute_handle");
+			$("#minute_slider").slider(
+			{
+				min: 0,
+				max: 55,
+				step: 5,
+				create: function()
+				{
+					minute_handle.text($(this).slider("value")+'m');
+				},
+				slide : function(event,ui)
+				{
+					minute_handle.text(ui.value+'m');
+				}
+			});
+		
+			$("#connection").on("click", ".btn_connect", async function(event)
+			{			
+				event.preventDefault();
+				
+				try
+				{
+					$("#noBLE").hide();
+					$("#noDevice").hide();
+					$("#invalidPassword").hide();
+				
+					const device = await navigator.bluetooth.requestDevice({acceptAllDevices:true})
+
+					password = prompt("Password");
+					if(typeof(password) === 'string' || password instanceof String)
 					{
-						this.buttonText.text( placeholder );    
+						if(true)
+						{
+							$("span",this).text("disconnect from device");
+						}
+						else
+						{
+							$("#invalidPassword").show();
+						}
+					}
+				}
+				catch(error)
+				{
+					console.log('BLE requestDevice error : ' + error);
+					if(error.name === 'TypeError')
+					{
+						$("#noBLE").show();
+					}
+					else if(error.name === 'NotFoundError')
+					{
+						$("#noDevice").show();
 					}
 				}
 			});
-
-			$("#device").selectmenu({placeholder:'select a device'});
-			
-			$("#btn_connect" ).click
-			(
-				function(event)
-				{				
-					event.preventDefault();
-				}
-			);
-			
-			$("#noBLE").hide();
-
 		});
 	</script>
 
@@ -184,5 +298,4 @@
 </html>
 
 <!--
-
 -->
