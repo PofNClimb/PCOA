@@ -11,41 +11,28 @@
 </head> 
 
 <body> 
+    <div data-role="page" id = "main-page">
+            <div data-role="header" style="overflow:hidden;">
+            </div>
+            <div data-role="content">
+                <div id = "some_div">
+                    Test div
+                </div>
+                <button id = "some_btn">Test button</button>
+            </div>
+        </div>
 
-<div data-role="page">
+        <script type="text/javascript">
+        function hide_things()
+        {
+            $('#some_div').hide();
+            $('#some_btn').closest('.ui-btn').hide();
+        }
 
-	<div data-role="header" id="test">
-		<h1>Single page</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">	
-		<p>This is a single page boilerplate template that you can copy to build your first jQuery Mobile page. Each link or form from here will pull a new page in via Ajax to support the animated page transitions.</p>		
-		<p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
-		<p>This template is standard HTML document with a single "page" container inside, unlike a <a href="multipage-template.html" data-ajax="false">multi-page template</a> that has multiple pages within it. We strongly recommend building your site or app as a series of separate pages like this because it's cleaner, more lightweight and works better without JavaScript.</p>
-	</div><!-- /content -->
-	
-	<div data-role="footer">
-		<h4>Footer content</h4>
-	</div><!-- /footer -->
-	
-</div><!-- /page -->
-
-<script type="text/javascript"> 
-    $(document).bind("mobileinit", function () {
-        // jQuery Mobile's Ajax navigation does not work in all cases (e.g.,
-        // when navigating from a mobile to a non-mobile page), especially when going back, hence disabling it.
-        $.extend($.mobile, {
-            ajaxEnabled: false
-        });
-    }); 
-</script>
-
-<script>		
-		$(document).ready(function ()
-		{
-			$("#test").hide();
-		});
-	</script>
-
+        $(document).on('pageshow', '#main-page', function () 
+        { 
+            hide_things();
+         });
+    </script>
 </body>
 </html>
