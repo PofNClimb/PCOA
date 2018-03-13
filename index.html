@@ -126,7 +126,7 @@
 			<center><button id="btnConnect" class="ui-btn ui-btn-inline"><span>connect to a PCOA device</span></button></center>
 		</div>		
 
-		<div class="message" id="noBLE" hidden>
+		<div class="message" id="noBLE">
 			<p>
 				<br/><br/><br/>
 				<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
@@ -218,7 +218,7 @@
 	<script>		
 		$(function ()
 		{
-			$("#noBLE").hide();
+			$("#noBLE").toggle();
 			$("#noDevice").hide();
 			$("#invalidPassword").hide();
 		});
