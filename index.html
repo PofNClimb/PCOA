@@ -11,28 +11,22 @@
 </head> 
 
 <body> 
-    <div data-role="page" id = "main-page">
-            <div data-role="header" style="overflow:hidden;">
-            </div>
-            <div data-role="content">
-                <div id = "some_div">
-                    Test div
-                </div>
-                <button id = "some_btn">Test button</button>
-            </div>
+<div data-role="page" id = "main-page">
+    <div data-role="header" style="overflow:hidden;"></div>
+    <div data-role="content">
+        <div id = "some_div">
+            Test div
         </div>
-
-        <script type="text/javascript">
-        function hide_things()
-        {
-            $('#some_div').hide();
-            $('#some_btn').closest('.ui-btn').hide();
-        }
-
-        $(document).on('pageshow', '#main-page', function () 
-        { 
-            hide_things();
-         });
-    </script>
+        <button id = "some_btn">Test button</button>
+    </div>
+	<script>
+    $(document).on('pageinit', '#main-page', function () 
+     {             
+        var page = $('[data-role="page"]:last'); 
+        page.find('#some_div').hide();
+        page.find('#some_btn').closest('.ui-btn').hide();                 
+     }); 
+	 </script>
+</div>
 </body>
 </html>
