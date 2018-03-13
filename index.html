@@ -1,38 +1,72 @@
 <!DOCTYPE html>
 <html>
 
-<head>    
+<head>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	<title>PCOApp</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
 <style>
 
+	button
+	{
+		font : bold 100% calibri, serif !important;
+	}
+	
+	.blank_row
+	{
+		height: 0.5em !important;
+	}
+	
+	.just_slider input[type=number]
+	{
+		display: none; 
+	}
+	
+	.just_slider
+	{
+		margin-left  : -5em;
+		margin-right : 1em;
+	}
+
 	@media (min-device-width:480px)
 	{
+		.ui-page,.ui-content
+		{
+			background : transparent;
+		}
+		
 		body
 		{
-			background-color    : white;
-			background-image    : url("https://pofnclimb.github.io/phone.PNG");
+			background          : url("https://pofnclimb.github.io/phone.PNG");
 			background-repeat   : no-repeat;
 			background-position : 50% 0%;
-			background-size     : 312px 640px;
+			background-size     : 315px 640px;
 		}
+		
 		#screen
 		{
 			max-width  : 272px;
 			height     : 403px;
 			margin     : 127px auto;
-			font-size  : small;
+			font-size  : 75%;
 		}
 	}
 		
 	@media (max-device-width:480px)
 	{
+		.ui-page,.ui-content
+		{
+			background : white;
+		}
+	
 		#screen
 		{
 			width  : 100%;
 			height : 100vh;
-			font-size : 290%;
 		}
 	}
 	
@@ -45,12 +79,6 @@
 		color : whitesmoke;
 		text-align : center;
 		vertical-align : middle;
-	}
-	
-	button
-	{
-		padding : 0.5em 1em 0.5em 1em;
-		font : bold 100% calibri, serif;
 	}
 	
 	#connection
@@ -79,31 +107,12 @@
 		text-decoration : none;
 	}
 	
-	#settings span
+	#settings .header
 	{
 		margin : 1em 1em 1em 0.5em;
 		font : 150% calibri, serif;
 	}
-	
-	.slider
-	{
-		margin : 0.5em 3.5em 0.5em 0.5em;
-	}
-	
-	#hour_handle, #minute_handle
-	{
-		width: 3em;
-		height: 1.6em;
-		top: 50%;
-		margin-top: -.8em;
-		text-align: center;
-		line-height: 1.6em;
-	}
-	
-	.blank_row
-	{
-		height: 1em !important;
-	}
+}
 
 </style>
 
@@ -114,7 +123,7 @@
 		<div id="title">PCOApp</div>
 		
 		<div id="connection" hidden>
-			<center><button id="btn_connect" class="btn_connect"><span>connect to a PCOA device</span></button></center>
+			<center><button id="btnConnect" class="ui-btn ui-btn-inline"><span>connect to a PCOA device</span></button></center>
 		</div>		
 
 		<div class="message" id="noBLE" hidden>
@@ -141,161 +150,84 @@
 		</div>
 		
 		<div id="settings">
-			<table>
+			<table><td width="1%"><td width="10%"><td width="1%">
 			
 				<tr class="blank_row"></tr>
 				<tr>
-					<td colspan="3">
-						<span><b>PCOA_prototype</b></span>
-					</td>
+					<td colspan="2"><span class="header"><b>PCOA_prototype</b></span></td>
 					<td>
-						<span>X</span>
+						<span style="text-align:right">X</span>
 					</td>
 				</tr>
 				
 				<tr class="blank_row"></tr><tr class="blank_row"></tr>
 				<tr>
-					<td rowspan="2"><span>Alarm</span></td>
-					<td colspan="3">
-						<div id="hour_slider" class="slider">
-							<div id="hour_handle" class="ui-slider-handle"></div>
+					<td rowspan="2"><span class="header">Alarm</span></td>
+					<td colspan="2">
+						<div id="alarmHours" class="just_slider">
+							<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23" data-show-value="true" data-popup-enabled="true">
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3">
-						<div id="minute_slider" class="slider">
-							<div id="minute_handle" class="ui-slider-handle"></div>
+					<td colspan="2">
+						<div id="alarmMinutes" class="just_slider">
+							<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5" data-show-value="true" data-popup-enabled="true">
 						</div>
-					</td>
-				</tr>
-				
-				<tr class="blank_row"></tr>
-				<tr>
-					<td rowspan="2"><span>Interval</span></td>
-					<td rowspan="2"  width="99%">
-						<center><input type="number" min="0" max="1440"></center>
-					</td>
-					<td>
-						<input type="radio" name="radio-1" id="radio-1">
-					</td>
-					<td>h</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="radio" name="radio-2" id="radio-2">
-					</td>
-					<td>m</td>
-				</tr>
-				
-				<tr class="blank_row"></tr>
-				<tr>
-					<td colspan="4">
-						<div id="save">
-							<center><button id="btn_save" class="btn_save">save settings</button></center>
-						</div>	
 					</td>
 				</tr>
 				
 				<tr class="blank_row"></tr><tr class="blank_row"></tr>
 				<tr>
-					<td colspan="4">
-						<div id="load">
-							<center><button id="btn_save" class="btn_save">load pills</button></center>
-						</div>	
+					<td rowspan="2"><span class="header">Interval</span></td>
+					<td colspan="2">
+						<div id="intervalHours" class="just_slider">
+							<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23" data-show-value="true" data-popup-enabled="true">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div id="alarmMinutes" class="just_slider">
+							<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5" data-show-value="true" data-popup-enabled="true">
+						</div>
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr><tr class="blank_row"></tr>
+				<tr>
+					<td colspan="3">
+						<center><button id="btnSave" class="ui-btn ui-btn-inline"><span>save settings</span></button></center>
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr><tr class="blank_row"></tr>
+				<tr>
+					<td colspan="3">
+						<center><button id="btnLoad" class="ui-btn ui-btn-inline"><span>load pills</span></button></center>
 					</td>
 				</tr>
 				
 			</table>
-			
-
 		</div>
-	</div>
+		
 
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">  
-	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>  
-	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script> 
-    <script>		
+		
+	</div>
+	
+	<script>		
 		$(function ()
 		{
 			$("#noBLE").hide();
 			$("#noDevice").hide();
 			$("#invalidPassword").hide();
-			
-			var hour_handle = $("#hour_handle");
-			$("#hour_slider").slider(
-			{
-				min: 0,
-				max: 23,
-				create: function()
-				{
-					hour_handle.text($(this).slider("value")+'h');
-				},
-				slide : function(event,ui)
-				{
-					hour_handle.text(ui.value+'h');
-				}
-			});
-			
-			var minute_handle = $("#minute_handle");
-			$("#minute_slider").slider(
-			{
-				min: 0,
-				max: 55,
-				step: 5,
-				create: function()
-				{
-					minute_handle.text($(this).slider("value")+'m');
-				},
-				slide : function(event,ui)
-				{
-					minute_handle.text(ui.value+'m');
-				}
-			});
-		
-			$("#connection").on("click", ".btn_connect", async function(event)
-			{			
-				event.preventDefault();
-				
-				try
-				{
-					$("#noBLE").hide();
-					$("#noDevice").hide();
-					$("#invalidPassword").hide();
-				
-					const device = await navigator.bluetooth.requestDevice({acceptAllDevices:true})
-
-					password = prompt("Password");
-					if(typeof(password) === 'string' || password instanceof String)
-					{
-						if(true)
-						{
-							$("span",this).text("disconnect from device");
-						}
-						else
-						{
-							$("#invalidPassword").show();
-						}
-					}
-				}
-				catch(error)
-				{
-					console.log('BLE requestDevice error : ' + error);
-					if(error.name === 'TypeError')
-					{
-						$("#noBLE").show();
-					}
-					else if(error.name === 'NotFoundError')
-					{
-						$("#noDevice").show();
-					}
-				}
-			});
 		});
 	</script>
 
 </body>
+
 </html>
 
-<!--
--->
+
+
+
