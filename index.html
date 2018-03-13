@@ -1,234 +1,41 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 
 <head>
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-	<script>$(document).bind("mobileinit", function (){$.extend($.mobile,{ajaxEnabled: false});});</script>
-	<title>PCOApp</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-</head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Single page template</title> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+</head> 
 
-<style>
+<body> 
 
-	button
-	{
-		font : bold 100% calibri, serif !important;
-	}
-	
-	.blank_row
-	{
-		height: 0.5em !important;
-	}
-	
-	.just_slider input[type=number]
-	{
-		display: none; 
-	}
-	
-	.just_slider
-	{
-		margin-left  : -5em;
-		margin-right : 1em;
-	}
+<div data-role="page">
 
-	@media (min-device-width:480px)
-	{
-		.ui-page,.ui-content
+	<div data-role="header" id="test">
+		<h1>Single page</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<p>This is a single page boilerplate template that you can copy to build your first jQuery Mobile page. Each link or form from here will pull a new page in via Ajax to support the animated page transitions.</p>		
+		<p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
+		<p>This template is standard HTML document with a single "page" container inside, unlike a <a href="multipage-template.html" data-ajax="false">multi-page template</a> that has multiple pages within it. We strongly recommend building your site or app as a series of separate pages like this because it's cleaner, more lightweight and works better without JavaScript.</p>
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<h4>Footer content</h4>
+	</div><!-- /footer -->
+	
+</div><!-- /page -->
+
+<script>		
+		$(document).ready(function ()
 		{
-			background : transparent;
-		}
-		
-		body
-		{
-			background          : url("https://pofnclimb.github.io/phone.PNG");
-			background-repeat   : no-repeat;
-			background-position : 50% 0%;
-			background-size     : 315px 640px;
-		}
-		
-		#home
-		{
-			max-width  : 272px;
-			height     : 403px;
-			margin     : 127px auto;
-			font-size  : 75%;
-		}
-	}
-		
-	@media (max-device-width:480px)
-	{
-		.ui-page,.ui-content
-		{
-			background : white;
-		}
-	
-		#home
-		{
-			width  : 100%;
-			height : 100vh;
-		}
-	}
-	
-	#title
-	{
-		font : bold 200% calibri, serif;
-		background-color : rgb(96,147,172);
-		height : 1.6em;
-		line-height : 1.6em;
-		color : whitesmoke;
-		text-align : center;
-		vertical-align : middle;
-	}
-	
-	#connection
-	{
-		margin : 1em;
-		margin-top : 5em;
-	}
-	
-	.message
-	{
-		display : table;
-		width   : 100%;
-	}
-
-	.message p
-	{
-		display: table-cell;
-		text-align : center;
-		vertical-align: middle;
-	}
-	
-	.message a
-	{
-		color : black;
-		font-weight : bold;
-		text-decoration : none;
-	}
-	
-	#settings .header
-	{
-		margin : 1em 1em 1em 0.5em;
-		font : 150% calibri, serif;
-	}
-}
-
-</style>
-
-<body>
-
-	<div id="home" data-role="page">
-	
-		<div id="title">PCOApp</div>
-		
-		<div id="connection" hidden>
-			<center><button id="btnConnect" class="ui-btn ui-btn-inline"><span>connect to a PCOA device</span></button></center>
-		</div>		
-
-		<div class="message" id="noBLE">
-			<p>
-				<br/><br/><br/>
-				<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
-				On Google Chrome, you can enable it as <a href="https://developers.google.com/web/updates/2014/03/Get-on-the-CSS-Grid">here</a><br/>
-				On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser
-			</p>
-		</div>
-		
-		<div class="message" id="noDevice" hidden>
-			<p>
-				<br/><br/><br/>
-				<b style="color:red;">No device has been found nearby</b>
-			</p>
-		</div>
-		
-		<div class="message" id="invalidPassword" hidden>
-			<p>
-				<br/><br/><br/>
-				<b style="color:red;">Invalid password</b>
-			</p>
-		</div>
-		
-		<div id="settings">
-			<table><td width="1%"><td width="10%"><td width="1%">
-			
-				<tr class="blank_row"></tr>
-				<tr>
-					<td colspan="2"><span class="header"><b>PCOA_prototype</b></span></td>
-					<td>
-						<span style="text-align:right">X</span>
-					</td>
-				</tr>
-				
-				<tr class="blank_row"></tr><tr class="blank_row"></tr>
-				<tr>
-					<td rowspan="2"><span class="header">Alarm</span></td>
-					<td colspan="2">
-						<div id="alarmHours" class="just_slider">
-							<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23" data-show-value="true" data-popup-enabled="true">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<div id="alarmMinutes" class="just_slider">
-							<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5" data-show-value="true" data-popup-enabled="true">
-						</div>
-					</td>
-				</tr>
-				
-				<tr class="blank_row"></tr><tr class="blank_row"></tr>
-				<tr>
-					<td rowspan="2"><span class="header">Interval</span></td>
-					<td colspan="2">
-						<div id="intervalHours" class="just_slider">
-							<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23" data-show-value="true" data-popup-enabled="true">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<div id="alarmMinutes" class="just_slider">
-							<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5" data-show-value="true" data-popup-enabled="true">
-						</div>
-					</td>
-				</tr>
-				
-				<tr class="blank_row"></tr><tr class="blank_row"></tr>
-				<tr>
-					<td colspan="3">
-						<center><button id="btnSave" class="ui-btn ui-btn-inline"><span>save settings</span></button></center>
-					</td>
-				</tr>
-				
-				<tr class="blank_row"></tr><tr class="blank_row"></tr>
-				<tr>
-					<td colspan="3">
-						<center><button id="btnLoad" class="ui-btn ui-btn-inline"><span>load pills</span></button></center>
-					</td>
-				</tr>
-				
-			</table>
-		</div>
-		
-
-		
-	</div>
-	
-	<script>		
-		$(function ()
-		{
-			$("#noBLE").toggle();
-			$("#noDevice").hide();
-			$("#invalidPassword").hide();
+			$("#test").hide();
 		});
 	</script>
 
 </body>
-
 </html>
-
-
-
-
