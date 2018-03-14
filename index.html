@@ -42,6 +42,15 @@
 			<center><button id="btnConnect" class="ui-btn">connect to a PCOA device</button></center>
 		</div>
 		
+		<div data-role="popup" id="popupPassword" class="ui-corner-all" data-theme="a">
+			<form>
+				<div style="padding:10px 20px;">
+					<input type="password" name="password" id="password" value="" placeholder="password" data-theme="a">
+					<button id="btnPassword" type="submit" class="ui-btn">Ok</button>
+				</div>
+			</form>
+		</div>
+		
 		<div><br/><br/><br/></div>
 		
 		<center><div class="error" id="error"></div></center>
@@ -132,22 +141,7 @@
 		try
 		{
 			device = await navigator.bluetooth.requestDevice({acceptAllDevices:true})
-			confirm('Are you sure?');
-			password = prompt("Password");
-			if(typeof(password) === "string" || password instanceof String)
-			{
-				if(true)
-				{
-					$.mobile.changePage("#settings");
-				}
-				else
-				{
-					$("#error").html
-					(`
-						<b style="color:red;">Invalid password</b>
-					`); 
-				}
-			}
+			$("#popupPassword").popup("open")
 		}
 		catch(error)
 		{
@@ -181,6 +175,29 @@
 			}
  
 		}		
+	});
+	
+	$("#btnPassword").click(async function(event)
+	{			
+		event.preventDefault();
+		
+		$("#popupPassword").popup("close");
+		
+		var password = "password";
+		if(typeof(password) === "string" || password instanceof String)
+		{
+			if(false)
+			{
+				$.mobile.changePage("#settings");
+			}
+			else
+			{
+				$("#error").html
+				(`
+					<b style="color:red;">Invalid password</b>
+				`); 
+			}
+		}	
 	});
 </script>
 
