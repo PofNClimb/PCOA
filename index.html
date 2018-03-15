@@ -23,6 +23,25 @@
             border-left: 5px #666 outset !important;
         }
     }
+	
+	.ui-slider-input
+	{
+		display:none !important;
+		width:1px !important;
+		height:1px !important;
+	}
+	.ui-slider-track
+	{
+		width:100% !important;
+		float:left;
+		margin: 0 !important;
+	}
+	.ui-slider
+	{
+		width:calc(100% - 2em) !important;
+		float:left;
+		margin: !important;
+	}
 
 </style>
 
@@ -59,7 +78,6 @@
 
 </div>
 
-
 <div data-role="page" id="settings">
 
 	<div data-role="header">
@@ -79,7 +97,7 @@
 			
 			<tr><td><br/></td></tr>
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<center><button id="btnLoad" class="ui-btn"><span>load pills</span></button></center>
 				</td>
 			</tr>
@@ -88,6 +106,7 @@
 			<tr class="blank_row"></tr><tr class="blank_row"></tr>
 			<tr>
 				<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
+				<td><center><h4>12h</h4></center></td>
 				<td width="100%">
 					<div id="alarmHours" class="just_slider">
 						<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23">
@@ -95,6 +114,7 @@
 				</td>
 			</tr>
 			<tr>
+				<td><center><h4>30min</h4></center></td>
 				<td>
 					<div id="alarmMinutes" class="just_slider">
 						<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5">
@@ -105,6 +125,7 @@
 			<tr><td><br/></td></tr>
 			<tr>
 				<td rowspan="2"><h3>Interval&nbsp;&nbsp;&nbsp;</h3></td>
+				<td><center><h4>8h</h4></center></td>
 				<td>
 					<div id="intervalHours" class="just_slider">
 						<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23">
@@ -112,6 +133,7 @@
 				</td>
 			</tr>
 			<tr>
+				<td><center><h4>30min</h4></center></td>
 				<td>
 					<div id="alarmMinutes" class="just_slider">
 						<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5">
@@ -121,7 +143,7 @@
 			
 			<tr><td><br/></td></tr>
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<center><button id="btnSave" class="ui-btn"><span>save settings</span></button></center>
 				</td>
 			</tr>
