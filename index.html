@@ -47,179 +47,215 @@
 
 <body> 
 
-<div data-role="page" id="connection">
+	<div data-role="page" id="connection">
 
-	<div data-role="header">
-		<h1>PCOApp</h1>
+		<div data-role="header">
+			<h1>PCOApp</h1>
+		</div>
+
+		<div data-role="content">
+		
+			<div><br/><br/><br/><br/><br/></div>
+		
+			<div id="connection">
+				<center><button id="btnConnect" class="ui-btn">connect to a PCOA device</button></center>
+			</div>
+			
+			<div data-role="popup" id="popupPassword" class="ui-corner-all" data-theme="a">
+				<form>
+					<div style="padding:10px 20px;">
+						<input type="password" name="password" id="password" value="" placeholder="password" data-theme="a">
+						<button id="btnPassword" type="submit" class="ui-btn">Ok</button>
+					</div>
+				</form>
+			</div>
+			
+			<div><br/><br/><br/></div>
+			
+			<center><div class="error" id="error"></div></center>
+			
+		</div>
+
 	</div>
 
-	<div data-role="content">
-	
-		<div><br/><br/><br/><br/><br/></div>
-	
-		<div id="connection">
-			<center><button id="btnConnect" class="ui-btn">connect to a PCOA device</button></center>
+
+	<div data-role="page" id="settings">
+
+		<div data-role="header">
+			<h1>PCOApp</h1>
+		</div>
+
+		<div data-role="content">
+		
+			<table>
+				
+				<tr>
+					<td colspan="2"><span class="header">
+						<h3>PCOA_prototype</h3>
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="3">
+						<center><button id="btnLoad" class="ui-btn"><span>load pills</span></button></center>
+					</td>
+				</tr>
+				
+				<tr class="blank_row"></tr><tr class="blank_row"></tr>
+				<tr>
+					<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
+					<td><center><h4>12h</h4></center></td>
+					<td width="100%">
+						<div id="alarmHours" class="just_slider">
+							<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><center><h4>30min</h4></center></td>
+					<td>
+						<div id="alarmMinutes" class="just_slider">
+							<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5">
+						</div>
+					</td>
+				</tr>
+				
+				<tr>
+					<td rowspan="2"><h3>Interval&nbsp;&nbsp;&nbsp;</h3></td>
+					<td><center><h4>8h</h4></center></td>
+					<td>
+						<div id="intervalHours" class="just_slider">
+							<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><center><h4>30min</h4></center></td>
+					<td>
+						<div id="alarmMinutes" class="just_slider">
+							<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5">
+						</div>
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="3">
+						<center><button id="btnSave" class="ui-btn"><span>save settings</span></button></center>
+					</td>
+				</tr>
+				
+			</table>
+			
 		</div>
 		
-		<div data-role="popup" id="popupPassword" class="ui-corner-all" data-theme="a">
-			<form>
-				<div style="padding:10px 20px;">
-					<input type="password" name="password" id="password" value="" placeholder="password" data-theme="a">
-					<button id="btnPassword" type="submit" class="ui-btn">Ok</button>
-				</div>
-			</form>
-		</div>
-		
-		<div><br/><br/><br/></div>
-		
-		<center><div class="error" id="error"></div></center>
-		
 	</div>
 
-</div>
-
-
-<div data-role="page" id="settings">
-
-	<div data-role="header">
-		<h1>PCOApp</h1>
-	</div>
-
-	<div data-role="content">
+	<script>
 	
-		<table>
-			
-			<tr>
-				<td colspan="2"><span class="header">
-					<h3>PCOA_prototype</h3>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan="3">
-					<center><button id="btnLoad" class="ui-btn"><span>load pills</span></button></center>
-				</td>
-			</tr>
-			
-			<tr class="blank_row"></tr><tr class="blank_row"></tr>
-			<tr>
-				<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
-				<td><center><h4>12h</h4></center></td>
-				<td width="100%">
-					<div id="alarmHours" class="just_slider">
-						<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23">
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td><center><h4>30min</h4></center></td>
-				<td>
-					<div id="alarmMinutes" class="just_slider">
-						<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5">
-					</div>
-				</td>
-			</tr>
-			
-			<tr>
-				<td rowspan="2"><h3>Interval&nbsp;&nbsp;&nbsp;</h3></td>
-				<td><center><h4>8h</h4></center></td>
-				<td>
-					<div id="intervalHours" class="just_slider">
-						<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23">
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td><center><h4>30min</h4></center></td>
-				<td>
-					<div id="alarmMinutes" class="just_slider">
-						<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5">
-					</div>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan="3">
-					<center><button id="btnSave" class="ui-btn"><span>save settings</span></button></center>
-				</td>
-			</tr>
-			
-		</table>
+		var m_device;
+		var m_characteristic;
+		var m_received_data;
 		
-	</div>
-	
-</div>
-
-<script>
-	$("#btnConnect").click(async function(event)
-	{			
-		event.preventDefault();
-		
-		$("#error").html(""); 
-		try
-		{
-			device = await navigator.bluetooth.requestDevice({acceptAllDevices:true})
-			$("#popupPassword").popup("open")
-		}
-		catch(error)
-		{
-			console.log("BLE requestDevice error : " + error);
+		$("#btnConnect").click(async function(event)
+		{			
+			event.preventDefault();
 			
-			$("#error").html("error:" + error); 
-			
-			/*if(error.name === 'TypeError')
+			device = undefined;
+			$("#error").html("");
+			try
 			{
-				$("#error").html
-				(`
-					<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
-					On Google Chrome, you can enable it as <a href="https://developers.google.com/web/updates/2014/03/Get-on-the-CSS-Grid">here</a><br/>
-					On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser
-				`); 
+				m_device = await navigator.bluetooth.requestDevice({filters:[{services:[0xFFE0]}]});
+				$("#popupPassword").popup("open");
 			}
-			else if(error.name === 'NotFoundError')
+			catch(error)
 			{
-				if(!error.message.includes('User cancelled'))
+				console.log("BLE requestDevice error : " + error);
+				if(error.message.includes("undefined is not an object"))
 				{
 					$("#error").html
 					(`
-						<b style="color:red;">No device has been found nearby</b>
-					`);
+						<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
+						On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
+						On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser
+					`); 
+				}
+				else if(error.message.includes('Bluetooth adapter not available'))
+				{
+					$("#error").html
+					(`
+						<b style="color:red;">Bluetooth is busy or missing<br/>
+						or no device has been found nearby</b>
+					`); 
+				}
+				else if(!error.message.includes('User cancelled'))
+				{
+					$("#error").html
+					(`
+						<b style="color:red;">An unknown error occurred</b>
+					`); 
+				}
+			}		
+		});
+		
+		$("#btnPassword").click(function(event)
+		{			
+			event.preventDefault();
+			
+			console.log(m_device.name);
+			
+			$("#popupPassword").popup("close");
+			var password = $("#password").val();
+			if(typeof(password) === "string" || password instanceof String)
+			{
+				m_device.gatt.connect()
+				.then(function(server)
+				{
+					return server.getPrimaryService(0xFFE0);
+				})
+				.then(function(service)
+				{
+					return service.getCharacteristic(0xFFE1);
+				})
+				.then(function(characteristic)
+				{
+					m_characteristic = characteristic;
+					return m_characteristic.startNotifications();
+				})
+				.then(function()
+				{
+					m_characteristic.addEventListener('characteristicvaluechanged', dataReceived);
+				
+					m_characteristic.writeValue(new TextEncoder().encode("1password!"));
+					$.mobile.changePage("#settings");
+				})
+				.catch(function(error)
+				{
+					console.log("Connection error : " + error);
+					
+					$("#error").html
+					(`
+						<b style="color:red;">Failed to connect to device</b>
+					`); 
+				});
+			}	
+		});
+		
+		function dataReceived(event)
+		{
+			let value = new TextDecoder().decode(event.target.value);
+
+			for(let c of value)
+			{
+				console.log("Got:"+c);
+				m_received_data += c;
+				if(c === '!')
+				{
+					console.log("Data received : " + m_received_data);
+					m_received_data = '';
 				}
 			}
-			else
-			{
-				$("#error").html
-				(`
-					<b style="color:red;">An unknown error occurred</b>
-				`); 
-			}*/
- 
-		}		
-	});
-	
-	$("#btnPassword").click(async function(event)
-	{			
-		event.preventDefault();
-		
-		$("#popupPassword").popup("close");
-		
-		var password = "password";
-		if(typeof(password) === "string" || password instanceof String)
-		{
-			if(false)
-			{
-				$.mobile.changePage("#settings");
-			}
-			else
-			{
-				$("#error").html
-				(`
-					<b style="color:red;">Invalid password</b>
-				`); 
-			}
-		}	
-	});
-</script>
+		}
+	</script>
 
 </body>
 </html>
