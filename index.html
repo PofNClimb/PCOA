@@ -207,19 +207,19 @@
 				{
 					/**/console.log("BLE requestDevice error : " + error);
 					// TODO : make all the conditions as generic as possible
-					if(error.message.includes("requestDevice") && error.message.includes("undefined"))
+					if(error.includes("requestDevice") && error.includes("undefined"))
 					{
 						m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
 								   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
 								   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
 						FSM_Error();
 					}
-					else if(error.message.includes('Bluetooth adapter not available'))
+					else if(error.includes('Bluetooth adapter not available'))
 					{
 						m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
 						FSM_Error();
 					}
-					else if(error.message.includes('User cancelled'))
+					else if(error.includes('User cancelled'))
 					{
 						m_error = `<b style="color:red;">An unknown error occurred</b>`;
 						FSM_Error();
