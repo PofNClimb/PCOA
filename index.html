@@ -174,11 +174,19 @@
 		}
 		async function FSM_Initialize()
 		{
-			m_state = FSM_Initialize;
-			// TODO better : if device connected, disconnect onReceive callback, disconnect and undefine device
-			m_device = undefined;
-			m_characteristic = undefined;
+			m_state = FSM_Initialize;			
+			if(m_characteristic)
+			{
+				m_characteristic.removeEventListener('characteristicvaluechanged', BLEdataReceived);
+				m_characteristic = undefined;
+			}
+			if(m_device.gatt.connected)
+			{
+				m_device.gatt.disconnect();
+				m_device = undefined;
+			}
 			$.mobile.changePage("#connection");
+			location.reload();
 		}
 		async function FSM_Connect()
 		{
@@ -190,21 +198,34 @@
 			}
 			catch(error)
 			{
-				/**/console.log("BLE requestDevice error : " + error);
-				// TODO : make all the conditions as generic as possible
-				if(error.message.includes("requestDevice") && error.message.includes("undefined"))
+				// TODO : maybe improve all of this...
+				if(typeof error !== 'string' && !(error instanceof String) && error.hasOwnProperty('message'))
 				{
-					m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
-							   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
-							   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
-					FSM_Error();
+					error = error.message;
 				}
-				else if(error.message.includes('Bluetooth adapter not available'))
+				if(typeof error === 'string' || error instanceof String)
 				{
-					m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
-					FSM_Error();
+					/**/console.log("BLE requestDevice error : " + error);
+					// TODO : make all the conditions as generic as possible
+					if(error.message.includes("requestDevice") && error.message.includes("undefined"))
+					{
+						m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
+								   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
+								   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
+						FSM_Error();
+					}
+					else if(error.message.includes('Bluetooth adapter not available'))
+					{
+						m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
+						FSM_Error();
+					}
+					else if(error.message.includes('User cancelled'))
+					{
+						m_error = `<b style="color:red;">An unknown error occurred</b>`;
+						FSM_Error();
+					}
 				}
-				else if(!error.message.includes('User cancelled'))
+				else
 				{
 					m_error = `<b style="color:red;">An unknown error occurred</b>`;
 					FSM_Error();
