@@ -151,16 +151,37 @@
 	</div>
 
 	<script>
-	
+	$(document).bind("pageinit", async function()
+	{
+		/* SYSTEM VARIABLES */
 		var m_device;
 		var m_characteristic;
-		var m_received_data;
+		var m_error;
+		var m_state;
+
 		
-		$("#btnConnect").click(async function(event)
-		{			
-			event.preventDefault();
-			
-			device = undefined;
+		/* STATES */
+		async function FSM_UpdateState(state)
+		{
+			m_state = state;
+			await m_state();
+		}
+		async function FSM_Error()
+		{
+			$("#error").html(m_error);
+			m_error = "";
+			FSM_Initialize();
+		}
+		async function FSM_Initialize()
+		{
+			m_state = FSM_Initialize;
+			// TODO better : if device connected, disconnect onReceive callback, disconnect and undefine device
+			m_device = undefined;
+			m_characteristic = undefined;
+			$.mobile.changePage("#connection");
+		}
+		async function FSM_Connect()
+		{
 			$("#error").html("");
 			try
 			{
@@ -169,92 +190,112 @@
 			}
 			catch(error)
 			{
-				console.log("BLE requestDevice error : " + error);
-				if(error.message.includes("undefined is not an object"))
+				/**/console.log("BLE requestDevice error : " + error);
+				// TODO : make all the conditions as generic as possible
+				if(error.message.includes("requestDevice") && error.message.includes("undefined"))
 				{
-					$("#error").html
-					(`
-						<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
-						On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
-						On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser
-					`); 
+					m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
+							   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
+							   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
+					FSM_Error();
 				}
 				else if(error.message.includes('Bluetooth adapter not available'))
 				{
-					$("#error").html
-					(`
-						<b style="color:red;">Bluetooth is busy or missing<br/>
-						or no device has been found nearby</b>
-					`); 
+					m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
+					FSM_Error();
 				}
 				else if(!error.message.includes('User cancelled'))
 				{
-					$("#error").html
-					(`
-						<b style="color:red;">An unknown error occurred</b>
-					`); 
+					m_error = `<b style="color:red;">An unknown error occurred</b>`;
+					FSM_Error();
 				}
-			}		
-		});
-		
-		$("#btnPassword").click(function(event)
-		{			
-			event.preventDefault();
-			
-			console.log(m_device.name);
-			
+			}
+		}
+		async function FSM_CheckPassword()
+		{
 			$("#popupPassword").popup("close");
 			var password = $("#password").val();
-			if(typeof(password) === "string" || password instanceof String)
+			m_device.gatt.connect()
+			.then(function(server)
 			{
-				m_device.gatt.connect()
-				.then(function(server)
-				{
-					return server.getPrimaryService(0xFFE0);
-				})
-				.then(function(service)
-				{
-					return service.getCharacteristic(0xFFE1);
-				})
-				.then(function(characteristic)
-				{
-					m_characteristic = characteristic;
-					return m_characteristic.startNotifications();
-				})
-				.then(function()
-				{
-					m_characteristic.addEventListener('characteristicvaluechanged', dataReceived);
-				
-					m_characteristic.writeValue(new TextEncoder().encode("1password!"));
-					$.mobile.changePage("#settings");
-				})
-				.catch(function(error)
-				{
-					console.log("Connection error : " + error);
-					
-					$("#error").html
-					(`
-						<b style="color:red;">Failed to connect to device</b>
-					`); 
-				});
-			}	
-		});
+				return server.getPrimaryService(0xFFE0);
+			})
+			.then(function(service)
+			{
+				return service.getCharacteristic(0xFFE1);
+			})
+			.then(function(characteristic)
+			{
+				m_characteristic = characteristic;
+				return m_characteristic.startNotifications();
+			})
+			.then(function()
+			{
+				m_characteristic.addEventListener('characteristicvaluechanged', BLEdataReceived);
+				m_characteristic.writeValue(new TextEncoder().encode('1'+password+'!'));
+			})
+			.catch(function(error)
+			{
+				/**/console.log("Connection error : " + error);
+				m_error = `<b style="color:red;">Failed to connect to device</b>`;
+				FSM_Error();
+			});
+		}
 		
-		function dataReceived(event)
+		
+		/* EVENTS */
+		$("#btnConnect").click(async function(event)
 		{
-			let value = new TextDecoder().decode(event.target.value);
-
-			for(let c of value)
+			event.preventDefault();
+			if(m_state==FSM_Initialize || m_state==FSM_Connect)
 			{
-				console.log("Got:"+c);
+				await FSM_UpdateState(FSM_Connect);
+			}
+		});
+		// TODO : popup closed by click outside
+		$("#btnPassword").click(async function(event)
+		{
+			event.preventDefault();
+			if(m_state == FSM_Connect)
+			{
+				await FSM_UpdateState(FSM_CheckPassword);
+			}
+		});
+		var m_received_data; // TODO : make a static variable
+		function BLEdataReceived(event)
+		{
+			var data = new TextDecoder().decode(event.target.value);
+			for(var c of data)
+			{
 				m_received_data += c;
 				if(c === '!')
 				{
 					console.log("Data received : " + m_received_data);
+					
+					var is_connection_settled = m_received_data.startsWith("17") && m_received_data.length==4;
+					if(is_connection_settled)
+					{
+						var is_connection_accepted = m_received_data.charAt(2)=='1';
+						if(is_connection_accepted)
+						{
+							alert("Connection accepted");
+						}
+						else
+						{
+							m_error = `<b style="color:red;">Invalid password</b>`;
+							FSM_Error();
+						}
+					}
 					m_received_data = '';
 				}
 			}
 		}
+		
+		
+		/* Run the FSM ! */
+		FSM_Initialize();	
+
+	});
 	</script>
 
 </body>
