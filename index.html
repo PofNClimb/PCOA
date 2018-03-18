@@ -261,7 +261,7 @@
 				await FSM_UpdateState(FSM_CheckPassword);
 			}
 		});
-		var m_received_data; // TODO : make a static variable
+		var m_received_data = ""; // TODO : make a static variable
 		function BLEdataReceived(event)
 		{
 			var data = new TextDecoder().decode(event.target.value);
@@ -286,7 +286,7 @@
 							FSM_Error();
 						}
 					}
-					m_received_data = '';
+					m_received_data = "";
 				}
 			}
 		}
