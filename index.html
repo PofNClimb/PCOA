@@ -180,13 +180,12 @@
 				m_characteristic.removeEventListener('characteristicvaluechanged', BLEdataReceived);
 				m_characteristic = undefined;
 			}
-			if(m_device.gatt.connected)
+			if(m_device)
 			{
 				m_device.gatt.disconnect();
 				m_device = undefined;
 			}
 			$.mobile.changePage("#connection");
-			location.reload();
 		}
 		async function FSM_Connect()
 		{
@@ -310,7 +309,7 @@
 					m_received_data = "";
 				}
 			}
-		}
+		}		
 		
 		
 		/* Run the FSM ! */
