@@ -213,73 +213,71 @@
 		async function FSM_Connect()
 		{
 			$("#error").html("");
-			try
+			
+			m_device = await navigator.bluetooth.requestDevice({filters:[{services:[0xFFE0]}]})
+			.catch(function(error)
 			{
-				m_device = await navigator.bluetooth.requestDevice({filters:[{services:[0xFFE0]}]})
-				.catch(function(error)
+				// TODO : maybe improve all of this...
+				if(typeof error !== 'string' && !(error instanceof String) && error.hasOwnProperty('message'))
 				{
-					// TODO : maybe improve all of this...
-					if(typeof error !== 'string' && !(error instanceof String) && error.hasOwnProperty('message'))
+					error = error.message;
+				}
+				if(typeof error === 'string' || error instanceof String)
+				{
+					/**/console.log("BLE requestDevice error : " + error);
+					// TODO : make all the conditions as generic as possible
+					if(error.includes("requestDevice") && error.includes("undefined"))
 					{
-						error = error.message;
+						m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
+								   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
+								   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
+						FSM_Error();
 					}
-					if(typeof error === 'string' || error instanceof String)
+					else if(error.includes('Bluetooth adapter not available'))
 					{
-						/**/console.log("BLE requestDevice error : " + error);
-						// TODO : make all the conditions as generic as possible
-						if(error.includes("requestDevice") && error.includes("undefined"))
-						{
-							m_error = `<b style="color:red;">Bluetooth Low Energy (BLE)<br/>is not supported on this browser</b><br/><br/><br/>
-									   On Google Chrome, you can enable it as <a href="https://github.com/urish/web-bluetooth-polyfill">here</a><br/>
-									   On iOS, you can use the <a href="https://itunes.apple.com/us/app/webble/id1193531073?mt=8">WebBLE</a> browser`;
-							FSM_Error();
-						}
-						else if(error.includes('Bluetooth adapter not available'))
-						{
-							m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
-							FSM_Error();
-						}
-						else if(error.includes('User cancelled'))
-						{
-							m_error = `<b style="color:red;">An unknown error occurred</b>`;
-							FSM_Error();
-						}
+						m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
+						FSM_Error();
 					}
-					else
+					else if(error.includes('User cancelled'))
 					{
 						m_error = `<b style="color:red;">An unknown error occurred</b>`;
 						FSM_Error();
 					}
-				});
-
-				m_device.gatt.connect()
-				.then(function(server)
+				}
+				else
 				{
-					return server.getPrimaryService(0xFFE0);
-				})
-				.then(function(service)
-				{
-					return service.getCharacteristic(0xFFE1);
-				})
-				.then(function(characteristic)
-				{
-					m_characteristic = characteristic;
-					return m_characteristic.startNotifications();
-				})
-				.then(function()
-				{
-					m_characteristic.addEventListener('characteristicvaluechanged', BLEdataReceived);
-					m_characteristic.writeValue(new TextEncoder().encode('0'));
-				})
-				.catch(function(error)
-				{
-					/**/console.log("Connection error : " + error);
-					m_error = `<b style="color:red;">Failed to connect to device</b>`;
+					m_error = `<b style="color:red;">An unknown error occurred</b>`;
 					FSM_Error();
-				});
+				}
+			});
 
-				$("#popupPassword").popup("open");
-			}
+			m_device.gatt.connect()
+			.then(function(server)
+			{
+				return server.getPrimaryService(0xFFE0);
+			})
+			.then(function(service)
+			{
+				return service.getCharacteristic(0xFFE1);
+			})
+			.then(function(characteristic)
+			{
+				m_characteristic = characteristic;
+				return m_characteristic.startNotifications();
+			})
+			.then(function()
+			{
+				m_characteristic.addEventListener('characteristicvaluechanged', BLEdataReceived);
+				m_characteristic.writeValue(new TextEncoder().encode('0'));
+			})
+			.catch(function(error)
+			{
+				/**/console.log("Connection error : " + error);
+				m_error = `<b style="color:red;">Failed to connect to device</b>`;
+				FSM_Error();
+			});
+
+			$("#popupPassword").popup("open");
 		}
 		async function FSM_CheckPassword()
 		{
@@ -292,7 +290,7 @@
 			catch(error)
 			{
 				/**/console.log("Connection error : " + error);
-				m_error = `<b style="color:red;">Failed to connect to device</b>`;
+				m_error = `<b style="color:red;">Failed to connect to device</b>`; // TODO : maybe an error message...
 				FSM_Error();
 			}
 		}
