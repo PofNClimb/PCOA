@@ -104,7 +104,7 @@
 				<tr class="blank_row"></tr><tr class="blank_row"></tr>
 				<tr>
 					<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
-					<td><center><h4>12h</h4></center></td>
+					<td><center><h4><div id="alarmHoursDisplay"></div></h4></center></td>
 					<td width="100%">
 						<div id="alarmHours" class="just_slider">
 							<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23">
@@ -112,7 +112,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td><center><h4>30min</h4></center></td>
+					<td><center><h4><div id="alarmMinutesDisplay"></div></h4></center></td>
 					<td>
 						<div id="alarmMinutes" class="just_slider">
 							<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5">
@@ -122,7 +122,7 @@
 				
 				<tr>
 					<td rowspan="2"><h3>Interval&nbsp;&nbsp;&nbsp;</h3></td>
-					<td><center><h4>8h</h4></center></td>
+					<td><center><h4><div id="intervalHoursDisplay"></div></h4></center></td>
 					<td>
 						<div id="intervalHours" class="just_slider">
 							<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23">
@@ -130,9 +130,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td><center><h4>30min</h4></center></td>
+					<td><center><h4><div id="intervalMinutesDisplay"></div></h4></center></td>
 					<td>
-						<div id="alarmMinutes" class="just_slider">
+						<div id="intervalMinutes" class="just_slider">
 							<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5">
 						</div>
 					</td>
@@ -149,8 +149,31 @@
 		</div>
 		
 	</div>
+	
+	<script> /* UI management */
+	$(document).bind("pageinit", async function()
+	{
+		$("#alarmHours").change(function()
+		{
+			$("#alarmHoursDisplay").html($("#alarmHoursSlider").val()+"h");
+		});
+		$("#alarmMinutes").change(function()
+		{
+			$("#alarmMinutesDisplay").html($("#alarmMinutesSlider").val()+"min");
+		});
+		$("#intervalHours").change(function()
+		{
+			$("#intervalHoursDisplay").html($("#intervalHoursSlider").val()+"h");
+		});
+		$("#intervalMinutes").change(function()
+		{
+			$("#intervalMinutesDisplay").html($("#intervalMinutesSlider").val()+"min");
+		});
+	});
+	</script>
 
-	<script>
+	<script> /* FSM management */
+	
 	$(document).bind("pageinit", async function()
 	{
 		/* SYSTEM VARIABLES */
@@ -261,6 +284,11 @@
 				FSM_Error();
 			});
 		}
+		async function FSM_RetrieveSettings()
+		{
+			m_characteristic.writeValue(new TextEncoder().encode("2!"));
+		}
+
 		
 		
 		/* EVENTS */
@@ -282,7 +310,7 @@
 			}
 		});
 		var m_received_data = ""; // TODO : make a static variable
-		function BLEdataReceived(event)
+		async function BLEdataReceived(event)
 		{
 			var data = new TextDecoder().decode(event.target.value);
 			for(var c of data)
@@ -295,17 +323,37 @@
 					var is_connection_settled = m_received_data.startsWith("17") && m_received_data.length==4;
 					if(is_connection_settled)
 					{
-						var is_connection_accepted = m_received_data.charAt(2)=='1';
-						if(is_connection_accepted)
+						if(m_state == FSM_CheckPassword)
 						{
-							alert("Connection accepted");
-						}
-						else
-						{
-							m_error = `<b style="color:red;">Invalid password</b>`;
-							FSM_Error();
+							var is_connection_accepted = m_received_data.charAt(2)=='1';
+							if(is_connection_accepted)
+							{
+								alert("Connection accepted");
+								await FSM_UpdateState(FSM_RetrieveSettings);
+							}
+							else
+							{
+								m_error = `<b style="color:red;">Invalid password</b>`;
+								FSM_Error();
+							}
 						}
 					}
+					
+					var is_settings_provided = m_received_data.startsWith("18"); //&& m_received_data.length==13;
+					if(is_settings_provided)
+					{
+						if(m_state == FSM_RetrieveSettings)
+						{
+							var settings = RegExp("^18(\\d{2})(\\d{2})(\\d{4})(\\d{2})(\\d{2})!$").exec(received_data).slice(1);
+							
+							$.mobile.changePage("#settings");
+							$("#alarmHoursSlider").val(settings[0]).slider("refresh");
+							$("#alarmMinutesSlider").val(settings[1]).slider("refresh");
+							$("#intervalHoursSlider").val(Math.floor(settings[2]/60)).slider("refresh");
+							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1)).slider("refresh");
+						}
+					}
+					
 					m_received_data = "";
 				}
 			}
@@ -314,7 +362,6 @@
 		
 		/* Run the FSM ! */
 		FSM_Initialize();	
-
 	});
 	</script>
 
