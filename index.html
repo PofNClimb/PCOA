@@ -174,7 +174,8 @@
 
 	<script> /* FSM management */
 	
-	$(document).bind("pageinit", async function()
+	//$(document).bind("pageinit", async function()
+	$(document).ready(function()
 	{
 		/* SYSTEM VARIABLES */
 		var m_device;
@@ -214,8 +215,39 @@
 		{
 			$("#error").html("");
 			
-			m_device = await navigator.bluetooth.requestDevice({filters:[{services:[0xFFE0]}]})
-			.catch(function(error)
+			try
+			{
+				m_device = await navigator.bluetooth.requestDevice({filters:[{services:[0xFFE0]}]});				
+				m_device.gatt.connect()
+				.then(function(server)
+				{
+					return server.getPrimaryService(0xFFE0);
+				})
+				.then(function(service)
+				{
+					return service.getCharacteristic(0xFFE1);
+				})
+				.then(function(characteristic)
+				{
+					m_characteristic = characteristic;
+					return m_characteristic.startNotifications();
+				})
+				.then(function()
+				{
+					m_characteristic.addEventListener('characteristicvaluechanged', BLEdataReceived);
+					m_characteristic.writeValue(new TextEncoder().encode('0'));
+				})
+				.catch(function(error)
+				{
+					/**/console.log("Connection error : " + error);
+					m_error = `<b style="color:red;">Failed to connect to device</b>`;
+					FSM_Error();
+				});
+
+				$("#password").html("");
+				$("#popupPassword").popup("open");
+			}
+			catch(error)
 			{
 				// TODO : maybe improve all of this...
 				if(typeof error !== 'string' && !(error instanceof String) && error.hasOwnProperty('message'))
@@ -249,35 +281,7 @@
 					m_error = `<b style="color:red;">An unknown error occurred</b>`;
 					FSM_Error();
 				}
-			});
-
-			m_device.gatt.connect()
-			.then(function(server)
-			{
-				return server.getPrimaryService(0xFFE0);
-			})
-			.then(function(service)
-			{
-				return service.getCharacteristic(0xFFE1);
-			})
-			.then(function(characteristic)
-			{
-				m_characteristic = characteristic;
-				return m_characteristic.startNotifications();
-			})
-			.then(function()
-			{
-				m_characteristic.addEventListener('characteristicvaluechanged', BLEdataReceived);
-				m_characteristic.writeValue(new TextEncoder().encode('0'));
-			})
-			.catch(function(error)
-			{
-				/**/console.log("Connection error : " + error);
-				m_error = `<b style="color:red;">Failed to connect to device</b>`;
-				FSM_Error();
-			});
-
-			$("#popupPassword").popup("open");
+			}
 		}
 		async function FSM_CheckPassword()
 		{
@@ -349,7 +353,7 @@
 						}
 					}
 					
-					var is_settings_provided = m_received_data.startsWith("18"); //&& m_received_data.length==13;
+					var is_settings_provided = m_received_data.startsWith("18") && m_received_data.length==15;
 					if(is_settings_provided)
 					{
 						if(m_state == FSM_RetrieveSettings)
