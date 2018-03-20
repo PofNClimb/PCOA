@@ -100,7 +100,7 @@
 				
 				<tr>
 					<td colspan="3">
-						<center><button id="btnLoad" class="ui-btn"></button></center>
+						<center><button id="btnLoad" class="ui-btn"><span id="btnLoadText"></span></button></center>
 					</td>
 				</tr>
 				
@@ -376,7 +376,7 @@
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
-							$("#btnLoad").html("load pills (" + settings[3] + "/" + settings[4] + ")");
+							$("#btnLoadText").html("load pills (" + settings[3] + "/" + settings[4] + ")");
 							$("#alarmHoursSlider").val(settings[0]).slider("refresh");
 							$("#alarmMinutesSlider").val(settings[1]).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60)).slider("refresh");
