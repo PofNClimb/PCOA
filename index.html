@@ -153,6 +153,15 @@
 		
 	</div>
 	
+	<script> /* Javascript immrovements */
+	Number.prototype.pad = function(size)
+	{
+		var s = String(this);
+		while (s.length < (size || 2)) {s = "0" + s;}
+		return s;
+	}
+	</script>
+	
 	<script> /* UI management */
 	$(document).bind("pageinit", async function()
 	{
@@ -373,14 +382,18 @@
 						if(m_state == FSM_RetrieveSettings)
 						{
 							var settings = RegExp("^18(\\d{2})(\\d{2})(\\d{4})(\\d{2})(\\d{2})!$").exec(m_received_data).slice(1);
+							for(var i = 0; i < settings.length; i++)
+							{
+								settings[i] = parseInt(settings[i],10);
+							}
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
 							$("#btnLoadText").html("load pills (" + settings[3] + "/" + settings[4] + ")");
-							$("#alarmHoursSlider").val(settings[0]).slider("refresh");
-							$("#alarmMinutesSlider").val(settings[1]).slider("refresh");
-							$("#intervalHoursSlider").val(Math.floor(settings[2]/60)).slider("refresh");
-							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1)).slider("refresh");
+							$("#alarmHoursSlider").val(settings[0].pad(2)).slider("refresh");
+							$("#alarmMinutesSlider").val(settings[1].pad(2)).slider("refresh");
+							$("#intervalHoursSlider").val(Math.floor(settings[2]/60).pad(2)).slider("refresh");
+							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1).pad(2)).slider("refresh");
 						}
 					}
 					
