@@ -100,7 +100,7 @@
 				
 				<tr>
 					<td colspan="3">
-						<center><button id="btnLoad" class="ui-btn"><span>load pills</span></button></center>
+						<center><button id="btnLoad" class="ui-btn"></button></center>
 					</td>
 				</tr>
 				
@@ -143,7 +143,7 @@
 				
 				<tr>
 					<td colspan="3">
-						<center><button id="btnSave" class="ui-btn"><span>save settings</span></button></center>
+						<center><button id="btnSave" class="ui-btn">save settings</button></center>
 					</td>
 				</tr>
 				
@@ -357,7 +357,6 @@
 							var is_connection_accepted = m_received_data.charAt(2)=='1';
 							if(is_connection_accepted)
 							{
-								alert("Connection accepted");
 								await FSM_UpdateState(FSM_RetrieveSettings);
 							}
 							else
@@ -377,6 +376,7 @@
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
+							$("#btnLoad").html("load pills (" + settings[3] + "/" + settings[4] + ")");
 							$("#alarmHoursSlider").val(settings[0]).slider("refresh");
 							$("#alarmMinutesSlider").val(settings[1]).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60)).slider("refresh");
