@@ -90,8 +90,11 @@
 			<table>
 				
 				<tr>
-					<td colspan="2"><span class="header">
-						<h3>PCOA_prototype</h3>
+					<td colspan="2">
+						<h3><div id="deviceName"></div></h3>
+					</td>
+					<td align="right">
+						<button id="btnDisconnect" data-role="button" data-icon="delete" data-iconpos="notext"></button>
 					</td>
 				</tr>
 				
@@ -104,7 +107,7 @@
 				<tr class="blank_row"></tr><tr class="blank_row"></tr>
 				<tr>
 					<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
-					<td><center><h4><div id="alarmHoursDisplay"></div></h4></center></td>
+					<td><center><h4><div id="alarmHoursDisplay">0h</div></h4></center></td>
 					<td width="100%">
 						<div id="alarmHours" class="just_slider">
 							<input type="range" name="alarmHoursSlider" id="alarmHoursSlider" value="0" min="0" max="23">
@@ -112,7 +115,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td><center><h4><div id="alarmMinutesDisplay"></div></h4></center></td>
+					<td><center><h4><div id="alarmMinutesDisplay">0min</div></h4></center></td>
 					<td>
 						<div id="alarmMinutes" class="just_slider">
 							<input type="range" name="alarmMinutesSlider" id="alarmMinutesSlider" value="0" min="0" max="55" step="5">
@@ -122,7 +125,7 @@
 				
 				<tr>
 					<td rowspan="2"><h3>Interval&nbsp;&nbsp;&nbsp;</h3></td>
-					<td><center><h4><div id="intervalHoursDisplay"></div></h4></center></td>
+					<td><center><h4><div id="intervalHoursDisplay">0h</div></h4></center></td>
 					<td>
 						<div id="intervalHours" class="just_slider">
 							<input type="range" name="intervalHoursSlider" id="intervalHoursSlider" value="0" min="0" max="23">
@@ -130,7 +133,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td><center><h4><div id="intervalMinutesDisplay"></div></h4></center></td>
+					<td><center><h4><div id="intervalMinutesDisplay">0min</div></h4></center></td>
 					<td>
 						<div id="intervalMinutes" class="just_slider">
 							<input type="range" name="intervalMinutesSlider" id="intervalMinutesSlider" value="0" min="0" max="55" step="5">
@@ -198,17 +201,7 @@
 		}
 		async function FSM_Initialize()
 		{
-			m_state = FSM_Initialize;			
-			if(m_characteristic)
-			{
-				m_characteristic.removeEventListener('characteristicvaluechanged', BLEdataReceived);
-				m_characteristic = undefined;
-			}
-			if(m_device)
-			{
-				m_device.gatt.disconnect();
-				m_device = undefined;
-			}
+			m_state = FSM_Initialize;
 			$.mobile.changePage("#connection");
 		}
 		async function FSM_Connect()
@@ -302,7 +295,21 @@
 		{
 			m_characteristic.writeValue(new TextEncoder().encode("2!"));
 		}
-
+		async function FSM_Disconnect()
+		{			
+			if(m_characteristic)
+			{
+				m_characteristic.removeEventListener('characteristicvaluechanged', BLEdataReceived);
+				m_characteristic = undefined;
+			}
+			if(m_device)
+			{
+				m_device.gatt.disconnect();
+				m_device = undefined;
+			}
+			$.mobile.changePage("#connection");
+			location.reload();
+		}
 		
 		
 		/* EVENTS */
@@ -321,6 +328,14 @@
 			if(m_state == FSM_Connect)
 			{
 				await FSM_UpdateState(FSM_CheckPassword);
+			}
+		});
+		$("#btnDisconnect").click(async function(event)
+		{
+			event.preventDefault();
+			if(m_state == m_state) // TODO : conditions !!!
+			{
+				await FSM_UpdateState(FSM_Disconnect);
 			}
 		});
 		var m_received_data = ""; // TODO : make a static variable
@@ -361,6 +376,7 @@
 							var settings = RegExp("^18(\\d{2})(\\d{2})(\\d{4})(\\d{2})(\\d{2})!$").exec(m_received_data).slice(1);
 							
 							$.mobile.changePage("#settings");
+							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
 							$("#alarmHoursSlider").val(settings[0]).slider("refresh");
 							$("#alarmMinutesSlider").val(settings[1]).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60)).slider("refresh");
