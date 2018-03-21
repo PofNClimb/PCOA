@@ -423,7 +423,7 @@
 					}
 					
 					var is_settings_settled = m_received_data.startsWith("22") && m_received_data.length==4;
-					if(is_settings_provided)
+					if(is_settings_settled)
 					{
 						if(m_state == FSM_UpdateSettings)
 						{
