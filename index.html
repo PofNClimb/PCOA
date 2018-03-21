@@ -314,9 +314,9 @@
 		}
 		async function FSM_UpdateSettings()
 		{
-			var alarm_hours = $("#alarmHoursSlider").val();
-			var alarm_minutes = $("#alarmMinutesSlider").val();
-			var interval = $("#intervalHoursSlider").val()*60 + $("#intervalMinutesSlider").val();
+			var alarm_hours = parseInt($("#alarmHoursSlider").val(),10);
+			var alarm_minutes = parseInt($("#alarmMinutesSlider").val(),10);
+			var interval = parseInt($("#intervalHoursSlider").val(),10)*60 + parseInt($("#intervalMinutesSlider").val(),10);
 			m_characteristic.writeValue(new TextEncoder().encode("6" + alarm_hours.pad(2) + alarm_minutes.pad(2) + interval.pad(4) + "!"));
 		}
 		async function FSM_Disconnect()
