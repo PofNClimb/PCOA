@@ -150,7 +150,7 @@
 			</table>
 			
 			<div data-role="popup" id="popupOK" data-position-to="window" class="ui-corner-all" data-theme="a">
-				<img src="success.png" alt="<h1>OK</h1>">
+				<img src="fail.png" alt="<h1>OK</h1>">
 			</div>
 			
 		</div>
@@ -365,7 +365,7 @@
 		$("#btnDisconnect").click(async function(event)
 		{
 			event.preventDefault();
-			if(m_state == m_state) // TODO : conditions !!!
+			if(m_state == FSM_WaitForUserAction)
 			{
 				await FSM_UpdateState(FSM_Disconnect);
 			}
