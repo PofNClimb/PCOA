@@ -61,7 +61,7 @@
 				<center><button id="btnConnect" class="ui-btn">connect to a PCOA device</button></center>
 			</div>
 			
-			<div data-role="popup" id="popupPassword" class="ui-corner-all" data-theme="a">
+			<div data-role="popup" data-position-to="window" id="popupPassword" class="ui-corner-all" data-theme="a">
 				<form>
 					<div style="padding:10px 20px;">
 						<input type="password" name="password" id="password" value="" placeholder="password" data-theme="a">
@@ -143,17 +143,21 @@
 				
 				<tr>
 					<td colspan="3">
-						<center><button id="btnSave" class="ui-btn">save settings</button></center>
+						<center><button id="btnUpdateSettings" class="ui-btn">save settings</button></center>
 					</td>
 				</tr>
 				
 			</table>
 			
+			<div data-role="popup" id="popupOK" data-position-to="window" class="ui-corner-all" data-theme="a">
+				<img src="success.png" alt="<h1>OK</h1>">
+			</div>
+			
 		</div>
 		
 	</div>
 	
-	<script> /* Javascript immrovements */
+	<script> /* Javascript improvements */
 	Number.prototype.pad = function(size)
 	{
 		var s = String(this);
@@ -304,6 +308,17 @@
 		{
 			m_characteristic.writeValue(new TextEncoder().encode("2!"));
 		}
+		async function FSM_WaitForUserAction()
+		{
+			
+		}
+		async function FSM_UpdateSettings()
+		{
+			var alarm_hours = $("#alarmHoursSlider").val();
+			var alarm_minutes = $("#alarmMinutesSlider").val();
+			var interval = $("#intervalHoursSlider").val()*60 + $("#intervalMinutesSlider").val();
+			m_characteristic.writeValue(new TextEncoder().encode("6" + alarm_hours.pad(2) + alarm_minutes.pad(2) + interval.pad(4) + "!"));
+		}
 		async function FSM_Disconnect()
 		{			
 			if(m_characteristic)
@@ -337,6 +352,14 @@
 			if(m_state == FSM_Connect)
 			{
 				await FSM_UpdateState(FSM_CheckPassword);
+			}
+		});
+		$("#btnUpdateSettings").click(async function(event)
+		{
+			event.preventDefault();
+			if(m_state == FSM_WaitForUserAction)
+			{
+				await FSM_UpdateState(FSM_UpdateSettings);
 			}
 		});
 		$("#btnDisconnect").click(async function(event)
@@ -394,6 +417,25 @@
 							$("#alarmMinutesSlider").val(settings[1].pad(2)).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60).pad(2)).slider("refresh");
 							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1).pad(2)).slider("refresh");
+						}
+					}
+					
+					var is_settings_settled = m_received_data.startsWith("22") && m_received_data.length==11;
+					if(is_settings_provided)
+					{
+						if(m_state == FSM_UpdateSettings)
+						{
+							var is_settings_accepted = m_received_data.charAt(2)=='1';
+							if(is_settings_accepted)
+							{
+								$("#popupOK").popup("open");
+								setTimeout(function(){$("#popupOK").popup("close");}, 1500);
+							}
+							else
+							{
+								
+							}
+							await FSM_UpdateState(FSM_WaitForUserAction);
 						}
 					}
 					
