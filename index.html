@@ -417,6 +417,8 @@
 							$("#alarmMinutesSlider").val(settings[1].pad(2)).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60).pad(2)).slider("refresh");
 							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1).pad(2)).slider("refresh");
+							
+							await FSM_UpdateState(FSM_WaitForUserAction);
 						}
 					}
 					
