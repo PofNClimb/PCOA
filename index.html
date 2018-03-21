@@ -150,7 +150,10 @@
 			</table>
 			
 			<div data-role="popup" id="popupOK" data-position-to="window" class="ui-corner-all" data-theme="a">
-				<img src="fail.png" alt="<h1>OK</h1>">
+				<img src="success.png" alt="<h1>Succeeded</h1>">
+			</div>
+			<div data-role="popup" id="popupKO" data-position-to="window" class="ui-corner-all" data-theme="a">
+				<img src="fail.png" alt="<h1>Failed</h1>">
 			</div>
 			
 		</div>
@@ -428,15 +431,9 @@
 						if(m_state == FSM_UpdateSettings)
 						{
 							var is_settings_accepted = m_received_data.charAt(2)=='1';
-							if(is_settings_accepted)
-							{
-								$("#popupOK").popup("open");
-								setTimeout(function(){$("#popupOK").popup("close");}, 1500);
-							}
-							else
-							{
-								
-							}
+							popup_id = is_settings_accepted ? "#popupOK" : "#popupKO";
+							$(popup_id).popup("open");
+							setTimeout(function(){$(popup_id).popup("close");}, 1500);
 							await FSM_UpdateState(FSM_WaitForUserAction);
 						}
 					}
