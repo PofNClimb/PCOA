@@ -23,7 +23,6 @@
             border-left: 5px #666 outset !important;
         }
     }
-	
 	.ui-slider-input
 	{
 		display:none !important;
@@ -42,6 +41,11 @@
 		float:left;
 		margin: !important;
 	}
+    .ui-disabled
+	{ 
+		opacity: 1 !important;
+	}
+}
 
 </style>
 
@@ -86,12 +90,12 @@
 		</div>
 
 		<div data-role="content">
-		
+
 			<table>
 				
 				<tr>
 					<td colspan="2">
-						<h3><div id="deviceName">name</div></h3>
+						<h3><div id="deviceName">PCOA_name</div></h3>
 					</td>
 					<td align="right">
 						<a href="#" data-theme="" id="btnDisconnect">
@@ -102,10 +106,10 @@
 				
 				<tr>
 					<td colspan="3">
-						<center><button id="btnLoad" class="ui-btn"><span id="btnLoadText"></span></button></center>
+						<center><button id="btnLoad" class="ui-btn"><span id="btnLoadText">load pills (0/0)</span></button></center>
 					</td>
 				</tr>
-				
+	
 				<tr class="blank_row"></tr><tr class="blank_row"></tr>
 				<tr>
 					<td rowspan="2"><h3>Alarm&nbsp;&nbsp;&nbsp;</h3></td>
@@ -151,9 +155,36 @@
 				
 			</table>
 			
+			<div data-role="popup" data-position-to="window" id="popupLoading" class="ui-corner-all" data-theme="a"  data-inline="true">
+				<form>
+					<div style="padding:10px 20px;">
+						<table>
+							<tr>
+								<td>
+									Load&nbsp;
+								</td>
+								<td>
+									<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+										<button id="btnMinus">-</button>
+										<button id="pillsCount" class="ui-disabled" disabled><span id="pillsCountText">0</span></button>
+										<button id="btnPlus">+</button>
+									</div>
+								</td>
+								<td>
+									&nbsp;pills
+								</td>
+							</tr>
+						</table>
+						<button id="btnStartStopLoading" type="submit" class="ui-btn">start/stop</button>
+					</div>
+				</form>
+			</div>
+
+			
 			<div data-role="popup" id="popupOK" data-position-to="window" class="ui-corner-all" data-theme="a">
 				<img src="success.png" alt="<h1>Succeeded</h1>">
 			</div>
+			
 			<div data-role="popup" id="popupKO" data-position-to="window" class="ui-corner-all" data-theme="a">
 				<img src="fail.png" alt="<h1>Failed</h1>">
 			</div>
@@ -189,6 +220,21 @@
 		$("#intervalMinutes").change(function()
 		{
 			$("#intervalMinutesDisplay").html($("#intervalMinutesSlider").val()+"min");
+		});
+		$("#btnMinus").unbind("click").on('click', function(event) // TODO : this way everywhere !!!
+		{
+			event.preventDefault();
+			var pills_count = parseInt($("#pillsCountText").html());
+			if(pills_count > 0)
+			{
+				$("#pillsCountText").html(pills_count-1);
+			}
+		});
+		$("#btnPlus").unbind("click").on('click', function(event)
+		{
+			event.preventDefault();
+			var pills_count = parseInt($("#pillsCountText").html());
+			$("#pillsCountText").html(pills_count+1); // TODO : add the limit
 		});
 	});
 	</script>
@@ -358,6 +404,15 @@
 			{
 				await FSM_UpdateState(FSM_CheckPassword);
 			}
+		});
+		$("#btnLoad").click(async function(event)
+		{
+			event.preventDefault();
+			/*if(m_state == FSM_WaitForUserAction)
+			{
+				await FSM_UpdateState();
+			}*/
+			$("#popupLoading").popup("open");
 		});
 		$("#btnUpdateSettings").click(async function(event)
 		{
