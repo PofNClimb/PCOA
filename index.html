@@ -90,17 +90,30 @@
 		</div>
 
 		<div data-role="content">
+		
+			<table>
+				<tr>
+					<td colspan="2" width="100%">
+						<div data-role="controlgroup" data-inline="true" data-type="horizontal">
+							<a href="#" data-theme="" id="btnRename" data-inline="true" class="ui-btn-right">
+								<img src="settings.png" style="width:1.5em; height:1.5em;" alt="">
+							</a>
+							&nbsp;<b><span id="deviceName">PCOA_name</span></b>
+						</div>
+					</td>
+					<td align="right">
+						<a href="#" data-theme="" id="btnDisconnect">
+							<img src="disconnect.png" style="width:1.5em; height:1.5em;" alt="">
+						</a>
+					</td>
+				</tr>
+			</table>
 
 			<table>
 				
 				<tr>
-					<td colspan="2">
-						<h3><div id="deviceName">PCOA_name</div></h3>
-					</td>
-					<td align="right">
-						<a href="#" data-theme="" id="btnDisconnect">
-							<img src="disconnect.png" style="width:2em; height:2em;" alt="">
-						</a>
+					<td colspan="3">
+						<center><button id="btnBolus" class="ui-btn">deliver bolus</button></center>
 					</td>
 				</tr>
 				
@@ -155,7 +168,7 @@
 				
 			</table>
 			
-			<div data-role="popup" data-position-to="window" id="popupLoading" class="ui-corner-all" data-theme="a"  data-inline="true">
+			<div data-role="popup" data-position-to="window" id="popupLoading" class="ui-corner-all" data-theme="a">
 				<form>
 					<div style="padding:10px 20px;">
 						<table>
