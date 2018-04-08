@@ -495,7 +495,7 @@
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
-							$("#lastDeliveryAge").html(Math.floor(settings[0]/60).pad(2)) + "h" + Math.round(settings[0]%60,-1).pad(2) + "min");
+							$("#lastDeliveryAge").html(Math.floor(settings[0]/60).pad(2) + "h" + Math.round(settings[0]%60,-1).pad(2) + "min");
 							$("#pillsStock").html(settings[4] + " / " + settings[5]);
 							$("#alarmHoursSlider").val(settings[1].pad(2)).slider("refresh");
 							$("#alarmMinutesSlider").val(settings[2].pad(2)).slider("refresh");
