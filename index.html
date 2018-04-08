@@ -466,7 +466,8 @@
 		$("#btnLoad").click(async function(event)
 		{
 			event.preventDefault();
-			if(m_state == FSM_WaitForUserAction)
+			var stock_capacity = RegExp("(\\d+) / (\\d+)$").exec($("#pillsStock").html()).slice(1);
+			if(m_state == FSM_WaitForUserAction && stock_capacity[0] < stock_capacity[1])
 			{
 				await FSM_UpdateState(FSM_TuneLoading);
 			}
@@ -474,7 +475,7 @@
 		$("#btnStartStopLoading").click(async function(event)
 		{
 			event.preventDefault();
-			if(m_state == FSM_TuneLoading)
+			if(m_state == FSM_TuneLoading && $("#pillsCountText").html() != "0")
 			{
 				await FSM_UpdateState(FSM_LoadPills);
 			}
@@ -483,6 +484,7 @@
 				await FSM_UpdateState(FSM_FinishLoading);
 			}
 		});
+		// TODO : popup closed by click outside before start
 		$("#btnUpdateSettings").click(async function(event)
 		{
 			event.preventDefault();
