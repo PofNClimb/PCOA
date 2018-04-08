@@ -114,14 +114,20 @@
 				</tr>
 			</table>
 			
-			<h3 id="lastDelivery">Last delivery : <span id="lastDeliberyDuration">0h 0min</span> ago</h3>
-			
 			<div class="ui-grid-a">
 				<div class="ui-block-a">
-					<button id="btnBolus" class="ui-btn">deliver bolus</button>
+					<button id="btnBolus" class="ui-btn">
+						deliver pill
+						<br/><br/>
+						<small>last <span id="lastDeliveryAge">00h00min</span> ago</small>
+					</button>
 				</div>
 				<div class="ui-block-b">
-					<button id="btnLoad" class="ui-btn"><span id="btnLoadText">load pills (0/0)</span></button>
+					<button id="btnLoad" class="ui-btn">
+						load pills
+						<br/><br/>
+						<small>still <span id="pillsStock">0 / 0</span></small>
+					</button>
 				</div>
 			</div>
 			
@@ -489,7 +495,7 @@
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
-							$("#btnLoadText").html("load pills (" + settings[3] + "/" + settings[4] + ")");
+							$("#pillsStock").html(settings[3] + " / " + settings[4]);
 							$("#alarmHoursSlider").val(settings[0].pad(2)).slider("refresh");
 							$("#alarmMinutesSlider").val(settings[1].pad(2)).slider("refresh");
 							$("#intervalHoursSlider").val(Math.floor(settings[2]/60).pad(2)).slider("refresh");
