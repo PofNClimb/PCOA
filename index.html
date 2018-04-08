@@ -574,7 +574,7 @@
 							var is_stock_accepted = m_received_data.charAt(2)=='1';
 							$("#popupLoading").popup("close");
 							
-							await FSM_UpdateState(FSM_WaitForUserAction);
+							await FSM_UpdateState(FSM_RetrieveSettings);
 						}
 					}
 					
