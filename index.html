@@ -119,14 +119,14 @@
 					<button id="btnBolus" class="ui-btn">
 						deliver pill
 						<br/><br/>
-						<small>last <span id="lastDeliveryAge">00h00min</span> ago</small>
+						<small>last <span id="lastDeliveryAge">more 24h</span> ago</small>
 					</button>
 				</div>
 				<div class="ui-block-b">
 					<button id="btnLoad" class="ui-btn">
 						load pills
 						<br/><br/>
-						<small>still <span id="pillsStock">0 / 0</span></small>
+						<small>still <span id="pillsStock">4 / 6</span></small>
 					</button>
 				</div>
 			</div>
@@ -198,7 +198,7 @@
 								</td>
 							</tr>
 						</table>
-						<button id="btnStartStopLoading" type="submit" class="ui-btn">start/stop</button>
+						<button id="btnStartStopLoading" type="submit" class="ui-btn"><span id="startOrStop">start/stop</span></button>
 					</div>
 				</form>
 			</div>
@@ -256,8 +256,16 @@
 		$("#btnPlus").unbind("click").on('click', function(event)
 		{
 			event.preventDefault();
-			var pills_count = parseInt($("#pillsCountText").html());
-			$("#pillsCountText").html(pills_count+1); // TODO : add the limit
+			
+			var stock_capacity = RegExp("(\\d+) / (\\d+)$").exec($("#pillsStock").html()).slice(1);
+			if(stock_capacity.length == 2)
+			{
+				var pills_count = parseInt($("#pillsCountText").html());
+				if(pills_count < stock_capacity[1]-stock_capacity[0])
+				{
+					$("#pillsCountText").html(pills_count+1);
+				}
+			}
 		});
 	});
 	</script>
@@ -350,7 +358,7 @@
 						m_error = `<b style="color:red;">Bluetooth is busy or missing<br/>or no device has been found nearby</b>`;
 						FSM_Error();
 					}
-					else if(error.includes('User cancelled'))
+					else if(!error.includes('User cancelled') && !error.includes('User canceled'))
 					{
 						m_error = `<b style="color:red;">An unknown error occurred</b>`;
 						FSM_Error();
@@ -385,6 +393,33 @@
 		async function FSM_WaitForUserAction()
 		{
 			
+		}
+		async function FSM_TuneLoading()
+		{
+			var stock_capacity = RegExp("(\\d+) / (\\d+)$").exec($("#pillsStock").html()).slice(1);
+			if(stock_capacity.length == 2)
+			{
+				$("#btnMinus").removeClass('ui-disabled');
+				$("#pillsCountText").html(stock_capacity[1]-stock_capacity[0]);
+				$("#btnPlus").removeClass('ui-disabled');
+				$("#startOrStop").html("start");
+				$("#popupLoading").popup("open");
+			}
+			else
+			{
+				// TODO
+			}
+		}
+		async function FSM_LoadPills()
+		{
+			$("#btnMinus").addClass('ui-disabled');
+			$("#btnPlus").addClass('ui-disabled');
+			$("#startOrStop").html("stop");
+			m_characteristic.writeValue(new TextEncoder().encode("7" + $("#pillsCountText").html() + "!"));
+		}
+		async function FSM_FinishLoading()
+		{
+			m_characteristic.writeValue(new TextEncoder().encode("70!"));
 		}
 		async function FSM_UpdateSettings()
 		{
@@ -431,11 +466,22 @@
 		$("#btnLoad").click(async function(event)
 		{
 			event.preventDefault();
-			/*if(m_state == FSM_WaitForUserAction)
+			if(m_state == FSM_WaitForUserAction)
 			{
-				await FSM_UpdateState();
-			}*/
-			$("#popupLoading").popup("open");
+				await FSM_UpdateState(FSM_TuneLoading);
+			}
+		});
+		$("#btnStartStopLoading").click(async function(event)
+		{
+			event.preventDefault();
+			if(m_state == FSM_TuneLoading)
+			{
+				await FSM_UpdateState(FSM_LoadPills);
+			}
+			else if(m_state == FSM_LoadPills)
+			{
+				await FSM_UpdateState(FSM_FinishLoading);
+			}
 		});
 		$("#btnUpdateSettings").click(async function(event)
 		{
@@ -515,6 +561,19 @@
 							popup_id = is_settings_accepted ? "#popupOK" : "#popupKO";
 							$(popup_id).popup("open");
 							setTimeout(function(){$(popup_id).popup("close");}, 1500);
+							
+							await FSM_UpdateState(FSM_WaitForUserAction);
+						}
+					}
+					
+					var is_stock_settled = m_received_data.startsWith("23") && m_received_data.length==4;
+					if(is_stock_settled)
+					{
+						if(m_state == FSM_FinishLoading) // TODO : should also manage the confirmation of loading...
+						{
+							var is_stock_accepted = m_received_data.charAt(2)=='1';
+							$("#popupLoading").popup("close");
+							
 							await FSM_UpdateState(FSM_WaitForUserAction);
 						}
 					}
