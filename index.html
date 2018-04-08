@@ -482,12 +482,12 @@
 						}
 					}
 					
-					var is_settings_provided = m_received_data.startsWith("18") && m_received_data.length==15;
+					var is_settings_provided = m_received_data.startsWith("18") && m_received_data.length==19;
 					if(is_settings_provided)
 					{
 						if(m_state == FSM_RetrieveSettings)
 						{
-							var settings = RegExp("^18(\\d{2})(\\d{2})(\\d{4})(\\d{2})(\\d{2})!$").exec(m_received_data).slice(1);
+							var settings = RegExp("^18(\\d{4})(\\d{2})(\\d{2})(\\d{4})(\\d{2})(\\d{2})!$").exec(m_received_data).slice(1);
 							for(var i = 0; i < settings.length; i++)
 							{
 								settings[i] = parseInt(settings[i],10);
@@ -495,11 +495,12 @@
 							
 							$.mobile.changePage("#settings");
 							$("#deviceName").html(m_device.name.length > 0 ? m_device.name : "Unnamed device");
-							$("#pillsStock").html(settings[3] + " / " + settings[4]);
-							$("#alarmHoursSlider").val(settings[0].pad(2)).slider("refresh");
-							$("#alarmMinutesSlider").val(settings[1].pad(2)).slider("refresh");
-							$("#intervalHoursSlider").val(Math.floor(settings[2]/60).pad(2)).slider("refresh");
-							$("#intervalMinutesSlider").val(Math.round(settings[2]%60,-1).pad(2)).slider("refresh");
+							$("#lastDeliveryAge").html(Math.floor(settings[0]/60).pad(2)) + "h" + Math.round(settings[0]%60,-1).pad(2) + "min");
+							$("#pillsStock").html(settings[4] + " / " + settings[5]);
+							$("#alarmHoursSlider").val(settings[1].pad(2)).slider("refresh");
+							$("#alarmMinutesSlider").val(settings[2].pad(2)).slider("refresh");
+							$("#intervalHoursSlider").val(Math.floor(settings[3]/60).pad(2)).slider("refresh");
+							$("#intervalMinutesSlider").val(Math.round(settings[3]%60,-1).pad(2)).slider("refresh");
 							
 							await FSM_UpdateState(FSM_WaitForUserAction);
 						}
