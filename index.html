@@ -23,6 +23,10 @@
             border-left: 5px #666 outset !important;
         }
     }
+	#lastDelivery
+	{
+		margin-bottom: 0.6em !important;
+	}
 	.ui-slider-input
 	{
 		display:none !important;
@@ -91,10 +95,10 @@
 
 		<div data-role="content">
 		
-			<table>
+			<table style="padding:0px;">
 				<tr>
 					<td colspan="2" width="100%">
-						<div data-role="controlgroup" data-inline="true" data-type="horizontal">
+						<div data-role="controlgroup" data-inline="true" data-type="horizontal" data-mini="true">
 							<a href="#" data-theme="" id="btnRename" data-inline="true" class="ui-btn-right">
 								<img src="settings.png" style="width:1.8em; height:1.8em;" alt="">
 							</a>
@@ -109,7 +113,7 @@
 				</tr>
 			</table>
 			
-			<h3>Last delivery : <span id="lastDelibery">0h 0min</span> ago</h3>
+			<h3 id="lastDelivery">Last delivery : <span id="lastDeliberyDuration">0h 0min</span> ago</h3>
 			
 			<div class="ui-grid-a">
 				<div class="ui-block-a">
