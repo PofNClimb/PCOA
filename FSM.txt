@@ -1,0 +1,57 @@
+FSM
+
+
+state = init
+device = undefined
+characteristic = undefined
+
+
+state error :
+	* display error
+	* goto state init
+	
+state init :
+	* if device connected, disconnect and undefine device
+	* page connection
+
+event click on btnConnect : -> state connect
+
+
+state connect :
+	* empty error
+	* request device to user
+	* popup password	
+	
+event error : -> state error ("no BLE" or "unknown error")
+event click on btnConnect : -> state connect (happens in case of a cancel)
+event popup closed : -> state init
+event ok in popup : -> check_password
+
+
+state check_password :
+	* close popup
+	* get characteristic 0xFFE1 from device and start notifications
+	* send password
+
+event error : -> state error ("failed to connect to device")
+event passwordKO received : -> state error ("invalid password")
+event passwordOK received : -> state update_time
+
+
+state update_time :
+	* send timestamp (hh:mm)
+
+event error : -> state error ("communication failed with device")
+event updatetimeKO received : -> state error ("the device encountered a problem")
+event updatetimeOK received : -> state get_information
+
+
+state get_information :
+	* send inforation_request
+	
+event error : -> state error ("communication failed with device")
+event information received : -> state display_information
+
+
+state display_information :
+	* update all sliders with retrieved information
